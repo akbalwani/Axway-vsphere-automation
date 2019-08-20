@@ -104,7 +104,7 @@ $inputXML = @"
         <Label x:Name="labelVer" Content="" HorizontalAlignment="Left" Margin="275,415,0,0" Width="311" IsEnabled="False" HorizontalContentAlignment="Right" Panel.ZIndex="20" Height="28" VerticalAlignment="Top"/>
         <Button x:Name="buttonFreeSpace" Content="Free Space" HorizontalAlignment="Left" Margin="90,0,0,10" Width="75" Height="20" VerticalAlignment="Bottom" IsEnabled="True"/>
 		<Button x:Name="buttondeleteVM" Content="Delete VM" HorizontalAlignment="Left" Margin="170,0,0,10" Width="75" Height="20" VerticalAlignment="Bottom" IsEnabled="True"/>
-        <Button x:Name="buttonhealthCheck" Content="Trigger healthcheck" HorizontalAlignment="Left" Margin="252,0,0,10" Width="150" Height="20" VerticalAlignment="Bottom" IsEnabled="True"/>
+        <Button x:Name="buttonlistVM" Content="List my VMs" HorizontalAlignment="Left" Margin="252,0,0,10" Width="70" Height="20" VerticalAlignment="Bottom" IsEnabled="True"/>
         </Grid>
 </Window>
 "@
@@ -149,7 +149,7 @@ $ESXHost = "aptxvcenterlab1.ptx.axway.int";
 $VMDefaultDomain = "lab.noid.axway.int";
 $VMAdmin = "Administrator"
 $VMRoot = "root"
-$VMPass = "axway"
+$VMPass = "Axway123"
 $VMOrg = "Axway"
 $VMWorkGroup = "WORKGROUP"
 $STServerPath = "/root/Axway/SecureTransport/conf/"
@@ -896,6 +896,58 @@ If ((Check-Credentials))
 
 
 }
+
+
+Function List-VM
+{
+#Write-Host "here here"
+
+If ((Check-Credentials)){
+
+    if ((Check-VMConnection)){
+
+        Write-Host "logged in with '$($WPFtextBoxUsername.Text)' "
+        Write-Host "selected '$($WPFcomboBoxVMFolder.SelectedItem)'"
+
+        $allVM= Get-VM -location $($WPFcomboBoxVMFolder.SelectedItem)
+        $WPFTextBoxLog.AppendText(" Listed below are your VM's : `n");
+        Write-Host "$(Get-VM -location $($WPFcomboBoxVMFolder.SelectedItem))";
+
+                if($allVM -eq " "){
+        
+                            $WPFTextBoxLog.AppendText(" NONE : `n");
+        
+                                   }
+                else {
+
+                Foreach($MYVM in $allVM){
+                                 Write-Host "'$($MYVM)'"
+                                 $WPFTextBoxLog.AppendText(" $($MYVM) `n");
+
+        
+                                     }
+                }
+
+        $WPFTextBoxLog.AppendText("`n Please delete whatever is not required.`n")
+
+             }
+
+
+    else {
+        Write-Host "connexon problemeo,please checko the servero! , lol"
+        }
+
+
+#Write-Host a
+	}
+
+else {
+Write-Host "login not valid"
+
+}
+
+
+}
 #===========================================================================
 # GUI action
 #===========================================================================
@@ -967,8 +1019,8 @@ $WPFbuttondeleteVM.Add_Click({
 })
 
 
-$WPFbuttonhealthCheck.Add_Click({
-	sss
+$WPFbuttonlistVM.Add_Click({
+	List-VM;
 })
 
 
