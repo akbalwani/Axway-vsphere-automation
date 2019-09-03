@@ -104,7 +104,7 @@ $inputXML = @"
         <Label x:Name="labelVer" Content="" HorizontalAlignment="Left" Margin="275,415,0,0" Width="311" IsEnabled="False" HorizontalContentAlignment="Right" Panel.ZIndex="20" Height="28" VerticalAlignment="Top"/>
         <Button x:Name="buttonFreeSpace" Content="Free Space" HorizontalAlignment="Left" Margin="90,0,0,10" Width="75" Height="20" VerticalAlignment="Bottom" IsEnabled="True"/>
 		<Button x:Name="buttondeleteVM" Content="Delete VM" HorizontalAlignment="Left" Margin="170,0,0,10" Width="75" Height="20" VerticalAlignment="Bottom" IsEnabled="True"/>
-        <Button x:Name="buttonlistVM" Content="List my VMs" HorizontalAlignment="Left" Margin="252,0,0,10" Width="70" Height="20" VerticalAlignment="Bottom" IsEnabled="True"/>
+        <Button x:Name="buttonlistVM" Content="List VMs" HorizontalAlignment="Left" Margin="252,0,0,10" Width="70" Height="20" VerticalAlignment="Bottom" IsEnabled="True"/>
         </Grid>
 </Window>
 "@
@@ -846,6 +846,11 @@ Function Disable-FileTransfer
 
 Function Delete-Vm
 {
+
+#remove below lines to get the cumulative log for the enrtire operation
+
+$WPFTextBoxLog.clear();
+
 #getting connection to the ESXI host AND checking the creds
 
 
@@ -854,42 +859,42 @@ If ((Check-Credentials))
 		
 		
 		If ((Check-VMConnection))
-		{
+		    {
 			
            If ($vm = Get-VM $WPFtextBoxName.Text)
 
-            {
-                    If ($vm.PowerState -eq "PoweredOn")
                  {
-                    #Write-Host "Shutting down $($WPFtextBoxName.Text)"
-                    $WPFTextBoxLog.AppendText("INFO: Stopping the VM $($WPFtextBoxName.Text)!`n");
-                    Shutdown-VMGuest -VM $WPFtextBoxName.Text -Confirm:$false
+                             If ($vm.PowerState -eq "PoweredOn")
+                                 {
+                                     #Write-Host "Shutting down $($WPFtextBoxName.Text)"
+                                        $WPFTextBoxLog.AppendText("INFO: Stopping the VM $($WPFtextBoxName.Text)!`n");
+                                        Shutdown-VMGuest -VM $WPFtextBoxName.Text -Confirm:$false
                 
-                    Do 
-                    { #Wait 5 seconds Start-Sleep -Seconds 5
+                             Do 
+                                 { #Wait 5 seconds Start-Sleep -Seconds 5
 
-                    $status = (Get-VM $WPFtextBoxName.Text).PowerState 
-                     }
-                     Until ($status -eq "PoweredOff") 
-                        Start-Sleep -Seconds 15
-                        #Write-Host "$($WPFtextBoxName.Text) has shutdown. It should be ready for configuration."
+                                    $status = (Get-VM $WPFtextBoxName.Text).PowerState 
+                                 }
+                             Until ($status -eq "PoweredOff") 
+                 Start-Sleep -Seconds 15
+                 #Write-Host "$($WPFtextBoxName.Text) has shutdown. It should be ready for configuration."
                         $WPFTextBoxLog.AppendText("INFO:  $($WPFtextBoxName.Text) stopped!`n");
                         Remove-VM $WPFtextBoxName.Text -DeletePermanently -Confirm:$false
 			            $WPFTextBoxLog.AppendText("INFO: $($WPFtextBoxName.Text) deleted`n");
 
 
-                    } 
+                                 } 
             Else 
                 {
                  Write-Host "VM '$($WPFtextBoxName.Text)' is not powered on! proceed delete direct" 
                   Remove-VM $WPFtextBoxName.Text -DeletePermanently -Confirm:$false
                   $WPFTextBoxLog.AppendText("INFO: $($WPFtextBoxName.Text) deleted`n");
                 }
-             } 
- Else
-  {
- Write-Host "VM '$($WPFtextBoxName.Text)' not found!" 
- }
+                 } 
+            Else
+                    {
+                Write-Host "VM '$($WPFtextBoxName.Text)' not found!" 
+                    }
 		}
 	}
 
@@ -901,6 +906,9 @@ If ((Check-Credentials))
 Function List-VM
 {
 #Write-Host "here here"
+#remove below lines to get the cumulative log for the enrtire operation
+
+$WPFTextBoxLog.clear();
 
 If ((Check-Credentials)){
 
