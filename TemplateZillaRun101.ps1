@@ -188,7 +188,7 @@ $CFTVersionsArray.AddRange(("324","332","340"));
 
 #List of CFT supported OSes.Use string that follows the naming convention of the templates.
 $CFTOSArray = New-Object System.Collections.ArrayList;
-$CFTOSArray.AddRange(("SUSE11SP4","RHEL75","Win2008R2","Win2012"));
+$CFTOSArray.AddRange(("SUSE11SP4","RHEL75","Win2008R2","Win2012","Win2016"));
 
 
 #List of API Suite supported version .Use string that follows the naming convention of the templates.
@@ -223,13 +223,21 @@ $LMOSArray.Add(("CENTOS7")) > $null;
 # $LMOSArray has single value now, so the Add method is used. If new values are to be added, the line should be replaced with the one below:
 # $LMOSArray.AddRange(("CENTOS7",""));
 
+# List of B2BI supported versions. Use string that follows the naming convention of the templates.
+$B2BIVersionsArray = New-Object System.Collections.ArrayList;
+$B2BIVersionsArray.AddRange(("231","240"));
+
+# List of B2BI supported OSes. Use string that follows the naming convention of the templates.
+$B2BIOSArray = New-Object System.Collections.ArrayList;
+$B2BIOSArray.AddRange(("RHEL7"," "));
+
 # List of products to deploy VMs for
 $ProductsArray = New-Object System.Collections.ArrayList;
 
 #$ProductsArray.AddRange(("SecureTransport","MailGate","LogMaster"));
 #Changed as Log master is not being used , dated 31/05/2019
 
-$ProductsArray.AddRange(("SecureTransport","MailGate","CFT","API","CG"));
+$ProductsArray.AddRange(("SecureTransport","MailGate","CFT","API","CG","B2BI"));
 # List of Support Engineers and their folder names
 $EngineersArray = New-Object System.Collections.ArrayList;
 $EngineersArray.AddRange(("Arpit","Seth","Surya","Akil","Shivangi","Tapan","Nidhi","Mohit","Vatsalya","chirag","abhinav","Sharjil","raju","sandeep","rahul","praveen","Nitasha","Nikhil","Jyoti"));
@@ -388,6 +396,10 @@ Function Create-TemplateName
 	ElseIf (($WPFcomboBoxProduct.SelectedItem -eq "CG"))
 	{
 		$TemplateConstructedName=$TemplateConstructedName + "CG";
+	}
+    ElseIf (($WPFcomboBoxProduct.SelectedItem -eq "B2BI"))
+	{
+		$TemplateConstructedName=$TemplateConstructedName + "B2BI";
 	}
 	# Adding the version to the template name string
 	$TemplateConstructedName=$TemplateConstructedName + $WPFcomboBoxVersion.SelectedItem;
@@ -1004,6 +1016,16 @@ $WPFcomboBoxProduct.Add_SelectionChanged({
 		# Filling the OS and Version ComboBoxes.
 		$WPFcomboBoxVersion.ItemsSource = $CGVersionsArray;
 		$WPFcomboBoxOS.ItemsSource = $CGOSArray;
+		
+		# Disable the file transfer functionality
+		Disable-FileTransfer;
+		Disable-FileTransfer;
+	}
+    ElseIf (($WPFcomboBoxProduct.SelectedItem -eq "B2BI"))
+	{
+		# Filling the OS and Version ComboBoxes.
+		$WPFcomboBoxVersion.ItemsSource = $B2BIVersionsArray;
+		$WPFcomboBoxOS.ItemsSource = $B2BIOSArray;
 		
 		# Disable the file transfer functionality
 		Disable-FileTransfer;
